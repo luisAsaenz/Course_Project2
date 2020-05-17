@@ -13,6 +13,6 @@ namespace RemindYoSelf.Models
         public string PhoneNUmber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public ICollection<DetailsTaskViewModel> UserTask { get; set; }
+        public IEnumerable<TaskViewModel> UserTask { get; set; }
     }
 }

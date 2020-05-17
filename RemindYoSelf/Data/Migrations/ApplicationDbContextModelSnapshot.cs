@@ -269,7 +269,7 @@ namespace RemindYoSelf.Migrations
                     b.ToTable("TaskTypes");
                 });
 
-            modelBuilder.Entity("RemindYoSelf.Data.UserTask", b =>
+            modelBuilder.Entity("RemindYoSelf.Data.UserTasks", b =>
                 {
                     b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd()
@@ -376,7 +376,7 @@ namespace RemindYoSelf.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("RemindYoSelf.Data.UserTask", b =>
+            modelBuilder.Entity("RemindYoSelf.Data.UserTasks", b =>
                 {
                     b.HasOne("RemindYoSelf.Data.TaskType", "TaskType")
                         .WithMany()

@@ -15,9 +15,10 @@ namespace RemindYoSelf.Mappings
             CreateMap<SumOfTask, SumOfTasksViewModel>().ReverseMap();
             CreateMap<TaskType, TaskTypeViewModel>().ReverseMap();
             CreateMap<User, UserViewModel>().ReverseMap();
-            CreateMap<UserTasks, DetailsTaskViewModel>().ReverseMap();
+            CreateMap<UserTasks, TaskViewModel>().ReverseMap();
             CreateMap<UserTasks, CreateTaskViewModel>().ReverseMap();
             
         }
     }
 }
+ 

@@ -38,6 +38,12 @@ namespace RemindYoSelf.Repository
             return Idfound;
         }
 
+        public bool IsExist(int id)
+        {
+            var exists = _context.Task.Any(x => x.TaskId == id);
+            return exists;
+        }
+
         public bool Save()
         {
             var changes = _context.SaveChanges();

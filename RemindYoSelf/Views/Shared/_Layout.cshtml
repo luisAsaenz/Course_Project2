@@ -12,6 +12,9 @@
             background-color: black; /* For browsers that do not support gradients */
             background-image: linear-gradient(to bottom right, black, orange); /* Standard syntax (must be last) */
         }
+        #body2 {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -31,14 +34,14 @@
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Tasks</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Tasks" asp-action="Index">Task Catagories</a>
                         </li> 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"> Task Manager </a>
                             <div class="dropdown-menu" aria-labeledby="navbarDropdownMenuLink">
                                 <a class="dropdown-item" href="#">Add Task</a>
-                                <a class="dropdown-item" href="#">Edit Task</a>
-                                <a class="dropdown-item" href="#">Delete Task</a>
+                                <a class="dropdown-item" href="#">Edit A Task</a>
+                                <a class="dropdown-item" href="#">Today's Task</a>
                                  </div>
                         </li> 
 
@@ -48,7 +51,7 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3" id="body2">
             @RenderBody()
         </main>
     </div>

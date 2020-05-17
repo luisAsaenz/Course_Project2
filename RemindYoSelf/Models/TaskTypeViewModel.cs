@@ -8,8 +8,10 @@ namespace RemindYoSelf.Models
 {
     public class TaskTypeViewModel
     {
+        [Key]
         public int Id { get; set; }
         [Required]
+        [Display(Name = "Category")]
         public string Name { get; set; }
         // There will be a fixed # of TaskTyped names to choose from. For anything else the option will be other
     }

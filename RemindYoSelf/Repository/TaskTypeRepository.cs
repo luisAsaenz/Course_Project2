@@ -39,6 +39,11 @@ namespace RemindYoSelf.Repository
             return Idfound;
         }
 
+        public bool IsExist(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Save()
         {
             var changes = _context.SaveChanges();
