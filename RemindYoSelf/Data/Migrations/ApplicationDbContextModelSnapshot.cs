@@ -235,10 +235,7 @@ namespace RemindYoSelf.Migrations
                     b.Property<int>("NumberOfTask")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TaskTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TastTypeId")
+                    b.Property<int>("TaskTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -369,7 +366,9 @@ namespace RemindYoSelf.Migrations
                 {
                     b.HasOne("RemindYoSelf.Data.TaskType", "TaskType")
                         .WithMany()
-                        .HasForeignKey("TaskTypeId");
+                        .HasForeignKey("TaskTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("RemindYoSelf.Data.User", "User")
                         .WithMany()

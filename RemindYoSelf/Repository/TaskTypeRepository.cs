@@ -41,7 +41,8 @@ namespace RemindYoSelf.Repository
 
         public bool IsExist(int id)
         {
-            throw new NotImplementedException();
+            var exists = _context.TaskTypes.Any(x => x.Id == id);
+            return exists;
         }
 
         public bool Save()

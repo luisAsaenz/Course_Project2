@@ -176,8 +176,7 @@ namespace RemindYoSelf.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NumberOfTask = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    TaskTypeId = table.Column<int>(nullable: true),
-                    TastTypeId = table.Column<int>(nullable: false)
+                    TaskTypeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,7 +186,7 @@ namespace RemindYoSelf.Migrations
                         column: x => x.TaskTypeId,
                         principalTable: "TaskTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_SumOfTasks_AspNetUsers_UserId",
                         column: x => x.UserId,

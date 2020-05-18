@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Internal;
 using RemindYoSelf.Contracts;
 using RemindYoSelf.Data;
@@ -77,32 +79,17 @@ namespace RemindYoSelf.Controllers
                     ModelState.AddModelError("", "Something Went Wrong..");
                     return View(ct);
                 }
-                //var sum = _repoSumTask.FindAll();
-                //IEnumerable<string> user = sum.Where(x => x.UserId == ct.UserId && x.TastTypeId == ct.TaskTypeId).Select(x => x.UserId);
-                //if (user.Contains(ct.UserId))
-                //{
-                //    //SumOfTask sumOfTask = new SumOfTask();
-                //    //sumOfTask.NumberOfTask++;
-                //    //sumOfTask.TastTypeId = ct.TaskTypeId;
-                //    //sumOfTask.UserId = ct.UserId;
-                //    //_context.Update()
-                //    var SumofT = sum.Where(x => x.UserId == ct.UserId && x.TastTypeId == ct.TaskTypeId);
-                //    foreach (SumOfTask t in SumofT)
-                //    {
-                //        t.NumberOfTask++;
-                //    }
-                //    _context.SaveChanges();
-                //}
-                
-                
-                //SumOfTask sumOfTask = new SumOfTask();
-                //sumOfTask.NumberOfTask = 1;
-                //sumOfTask.TastTypeId = ct.TaskTypeId;
-                //sumOfTask.UserId = ct.UserId;
-                //_context.SumOfTasks.Add(sumOfTask);
-                //_context.SaveChanges();
+                var sot = _repo.FindAll();
+                SumOfTasksViewModel s = new SumOfTasksViewModel()
+                {
+                    NumberOfTask = 1,
+                    TaskTypeId = ct.TaskTypeId,
+                    UserId = ct.UserId
+                };
+                var model2 = _mapper.Map<SumOfTask>(s);
+                _context.Add(model2);
+                _context.SaveChanges();
 
-                
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -116,23 +103,39 @@ namespace RemindYoSelf.Controllers
         // Todo: Make edit task searchable for task. Make more action methods for Edit Task
         public ActionResult Edit(int id)
         {
-            return View();
+            if (!_repo.IsExist(id))
+            {
+                return NotFound();
+            }
+            var task = _repo.FindById(id);
+            var model = _mapper.Map<CreateTaskViewModel>(task);
+            return View(model);
         }
 
         // POST: Task/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(CreateTaskViewModel ct)
         {
             try
             {
-                // TODO: Add update logic here
-
+                if(!ModelState.IsValid)
+                {
+                    return View(ct);
+                }
+                var task = _mapper.Map<UserTasks>(ct);
+                var isUpdated = _repoTask.Update(task);
+                if (!isUpdated)
+                {
+                    ModelState.AddModelError("", "Something went wrong updating changes");
+                    return View(ct);
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                ModelState.AddModelError("", "Something went wrong...");
+                return View(ct);
             }
         }
 

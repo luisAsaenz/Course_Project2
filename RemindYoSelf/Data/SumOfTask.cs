@@ -18,6 +18,6 @@ namespace RemindYoSelf.Data
         [ForeignKey("TaskTypeId")]
         public TaskType TaskType {get;set;}
 
-        public int TastTypeId { get; set; }
+        public int TaskTypeId { get; set; }
     }
 }

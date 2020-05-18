@@ -1,0 +1,57 @@
+﻿@model RemindYoSelf.Models.CreateTaskViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TaskId" />
+            <input type="hidden" asp-for="UserId" />
+            <div class="form-group">
+                <label asp-for="TaskTitle" class="control-label"></label>
+                <input asp-for="TaskTitle" class="form-control" />
+                <span asp-validation-for="TaskTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tasks" class="control-label"></label>
+                <input asp-for="Tasks" class="form-control" />
+                <span asp-validation-for="Tasks" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskDue" class="control-label"></label>
+                <input asp-for="TaskDue" class="form-control" />
+                <span asp-validation-for="TaskDue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskTypeId" class="control-label"></label>
+                <select asp-for="TaskTypeId" class="form-control">
+                    <option value="1">House Work</option>
+                    <option value="2">Appointments</option>
+                    <option value="3">Social Gatherings</option>
+                    <option value="4">Work</option>
+                    <option value="5">School</option>
+                    <option value="6">Other</option>
+                </select>
+                <span asp-validation-for="TaskTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-success btn-block" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
