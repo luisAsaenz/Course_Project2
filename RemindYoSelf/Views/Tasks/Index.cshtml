@@ -4,21 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>All Task</h1>
 <style>
-    #namas, #namas2{
-        color:white;
+    #namas, #namas2 {
+        color: black;
     }
 </style>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" type ="button" class="btn btn-success"> <i class="fa fa-plus" aria-hidden="true"></i> Create New</a>
 </p>
 
-<table class="table">
+<table id="tableData" class="table">
     <thead>
         <tr id="namas">
             <th>
-                @Html.DisplayNameFor(model => model.TaskTitle)
+                Title
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Tasks)
@@ -27,33 +27,33 @@
                 @Html.DisplayNameFor(model => model.TaskDue)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TaskTypeName)
+                Catagory
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr id="namas2">
-          <td>
-                @Html.DisplayFor(modelItem => item.TaskTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tasks)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskDue)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TaskTypeName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TaskId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TaskId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TaskId">Delete</a>
-            </td>
-        </tr>
-}
-       
+        @foreach (var item in Model)
+        {
+            <tr id="namas2">
+                <td>
+                    @Html.DisplayFor(modelItem => item.TaskTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tasks)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TaskDue)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TaskTypeName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.TaskId" class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</a> 
+                    <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.TaskId"> <i class="fa fa-info" aria-hidden="true"></i> Details</a> 
+                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.TaskId" onclick="return confirm('Are you sure you want to delete this record?')"> <i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

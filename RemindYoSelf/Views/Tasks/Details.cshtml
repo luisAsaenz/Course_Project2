@@ -1,0 +1,43 @@
+﻿@model RemindYoSelf.Models.CreateTaskViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TaskTitle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TaskTitle)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tasks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tasks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TaskDue)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TaskDue)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UserId)
+        </dd>
+       
+    </dl>
+</div>
+<div >
+    <a asp-action="Edit" asp-route-id="@Model.TaskId"class="btn btn-warning"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</a> 
+  
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>

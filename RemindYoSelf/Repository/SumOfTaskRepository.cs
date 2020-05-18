@@ -44,13 +44,14 @@ namespace RemindYoSelf.Repository
             return exists;
         }
 
+
         public bool Save()
         {
             var changes = _context.SaveChanges();
             return changes > 0;
         }
 
-        public bool Update(Data.SumOfTask entity)
+        public bool Update(SumOfTask entity)
         {
             _context.SumOfTasks.Update(entity);
             return Save();

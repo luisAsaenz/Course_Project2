@@ -17,6 +17,7 @@ namespace RemindYoSelf.Data
         public DbSet<UserTasks> Task { get; set; }
         public DbSet<TaskType> TaskTypes { get; set; }
         public DbSet<SumOfTask> SumOfTasks { get; set; }
+
  
     }
 }

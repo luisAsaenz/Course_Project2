@@ -57,9 +57,6 @@ namespace RemindYoSelf.Models
         public TaskTypeViewModel TaskType { get; set; }
         [Display(Name = "Catagory Of Task")]
         public int TaskTypeId { get; set; }
-
-        
-        
-        
+   
     }
 }

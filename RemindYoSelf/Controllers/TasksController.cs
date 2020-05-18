@@ -8,6 +8,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Internal;
 using RemindYoSelf.Contracts;
 using RemindYoSelf.Data;
@@ -33,17 +34,18 @@ namespace RemindYoSelf.Controllers
         // GET: Task
         public ActionResult Index()
         {
-            var userstasks = _repoTask.FindAll();
+            var userstasks = _repoTask.FindAll().ToList();
             var tasktype = _repo.FindAll().ToList();
             IEnumerable<TaskViewModel> t = userstasks.Join(tasktype, task => task.TaskTypeId, type => type.Id, (task, type) => new TaskViewModel
             {
+                TaskId = task.TaskId,
                 TaskTitle = task.TaskTitle,
                 Tasks = task.Tasks,
                 TaskDue = task.TaskDue,
                 TaskTypeName = type.Name
             }).OrderBy(x => x.TaskDue);
-            
-            
+
+            var model = _mapper.Map<List<UserTasks>, List<TaskViewModel>>(userstasks);
             return View(t);
 
         }
@@ -51,7 +53,13 @@ namespace RemindYoSelf.Controllers
         // GET: Task/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            if (!_repoTask.IsExist(id))
+            {
+                return NotFound();
+            }
+            var task = _repoTask.FindById(id);
+            var model = _mapper.Map<CreateTaskViewModel>(task);
+            return View(model);
         }
 
         // GET: Task/Create
@@ -79,16 +87,33 @@ namespace RemindYoSelf.Controllers
                     ModelState.AddModelError("", "Something Went Wrong..");
                     return View(ct);
                 }
-                var sot = _repo.FindAll();
-                SumOfTasksViewModel s = new SumOfTasksViewModel()
+                var sot = _repoSumTask.FindAll();
+
+                var sumoft = sot.Where(x => x.TaskTypeId == ct.TaskTypeId && x.UserId == ct.UserId).Select(x => x.Id).FirstOrDefault();
+                if (!_repoSumTask.IsExist(sumoft)) 
                 {
-                    NumberOfTask = 1,
-                    TaskTypeId = ct.TaskTypeId,
-                    UserId = ct.UserId
-                };
-                var model2 = _mapper.Map<SumOfTask>(s);
-                _context.Add(model2);
-                _context.SaveChanges();
+                     SumOfTasksViewModel s = new SumOfTasksViewModel()
+                     {
+                         NumberOfTask = 1,
+                         TaskTypeId = ct.TaskTypeId,
+                         UserId = ct.UserId
+                     };
+                     var model1 = _mapper.Map<SumOfTask>(s);
+                     _context.Add(model1);
+                     _context.SaveChanges();
+                }
+                else
+                {
+                    var SumT = _context.SumOfTasks.FirstOrDefault(x => x.Id.Equals(sumoft));
+                    SumT.NumberOfTask++;
+                    SumT.TaskTypeId = ct.TaskTypeId;
+                    SumT.UserId = ct.UserId;
+                    var isAgeModified = _context.Entry(SumT).Property("NumberOfTask").IsModified;
+                    var isNameModified = _context.Entry(SumT).Property("TaskTypeId").IsModified;
+                    var isIsRegularStudentModified = _context.Entry(SumT).Property("UserId").IsModified;
+
+                    _context.SaveChanges();
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -103,11 +128,13 @@ namespace RemindYoSelf.Controllers
         // Todo: Make edit task searchable for task. Make more action methods for Edit Task
         public ActionResult Edit(int id)
         {
-            if (!_repo.IsExist(id))
+            
+            if (!_repoTask.IsExist(id))
             {
                 return NotFound();
             }
-            var task = _repo.FindById(id);
+            var task = _repoTask.FindById(id);
+            
             var model = _mapper.Map<CreateTaskViewModel>(task);
             return View(model);
         }
@@ -142,23 +169,70 @@ namespace RemindYoSelf.Controllers
         // GET: Task/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            var task = _repoTask.FindById(id);
+            if (task == null)
+            {
+                return NotFound();
+            }
+            var isDeleted = _repoTask.Delete(task);
+            if (!isDeleted)
+            {
+                return BadRequest();
+            }
+           
+            
+            var sot = _repoSumTask.FindAll();
+            var sumoft = sot.Where(x => x.TaskTypeId == task.TaskTypeId && x.UserId == task.UserId).Select(x => x.Id).FirstOrDefault();
+
+            var SumT = _context.SumOfTasks.FirstOrDefault(x => x.Id.Equals(sumoft));
+            SumT.NumberOfTask -= 1;
+            SumT.TaskTypeId = task.TaskTypeId;
+            SumT.UserId = task.UserId;
+            // check in debug if property has been deleted
+            var isAgeModified = _context.Entry(SumT).Property("NumberOfTask").IsModified;
+            var isNameModified = _context.Entry(SumT).Property("TaskTypeId").IsModified;
+            var isIsRegularStudentModified = _context.Entry(SumT).Property("UserId").IsModified;
+
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Task/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, CreateTaskViewModel ct, string id2)
         {
             try
             {
                 // TODO: Add delete logic here
+                var task = _repoTask.FindById(id);
+                if (task == null)
+                {
+                    return NotFound();
+                }
+                var isDeleted = _repoTask.Delete(task);
+                if (!isDeleted)
+                {
+                    return View(ct);
+                }
+                var sot = _repoSumTask.FindAll();
+                var sumoft = sot.Where(x => x.TaskTypeId == ct.TaskTypeId && x.UserId == ct.UserId).Select(x => x.Id).FirstOrDefault();
 
+                var SumT = _context.SumOfTasks.FirstOrDefault(x => x.Id.Equals(sumoft));
+                SumT.NumberOfTask -= 1;
+                SumT.TaskTypeId = ct.TaskTypeId;
+                SumT.UserId = ct.UserId;
+                // check in debug if property has been deleted
+                var isAgeModified = _context.Entry(SumT).Property("NumberOfTask").IsModified;
+                var isNameModified = _context.Entry(SumT).Property("TaskTypeId").IsModified;
+                var isIsRegularStudentModified = _context.Entry(SumT).Property("UserId").IsModified;
+
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(ct);
             }
         }
     }
