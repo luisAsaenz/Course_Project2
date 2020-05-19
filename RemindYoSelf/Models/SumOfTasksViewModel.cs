@@ -24,4 +24,19 @@ namespace RemindYoSelf.Models
 
         public int TaskTypeId { get; set; }
     }
+    public class SumAndTaskNameViewModel
+    {
+        
+        public int Id { get; set; }
+        public int NumberOfTask { get; set; }
+        public UserViewModel Users { get; set; }
+        public string UserId { get; set; }
+        
+        public TaskTypeViewModel TaskType { get; set; }
+
+        public int TaskTypeId { get; set; }
+        public string TaskName { get; set; }
+        public string UrlRouting { get; set; }
+
+    }
 }

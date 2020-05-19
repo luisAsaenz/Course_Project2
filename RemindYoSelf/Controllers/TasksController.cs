@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -44,12 +45,37 @@ namespace RemindYoSelf.Controllers
                 TaskDue = task.TaskDue,
                 TaskTypeName = type.Name
             }).OrderBy(x => x.TaskDue);
+            int num = t.Count();
 
             var model = _mapper.Map<List<UserTasks>, List<TaskViewModel>>(userstasks);
             return View(t);
 
         }
+        public ActionResult TodayTask()
+        {
+            var userstasks = _repoTask.FindAll().ToList();
+            var tasktype = _repo.FindAll().ToList();
+            DateTime d = DateTime.Now.Date;
 
+            
+            IEnumerable<TaskViewModel> T = from ut in userstasks join tt in tasktype on ut.TaskTypeId equals tt.Id where ut.TaskDue == DateTime.Now.Date select new TaskViewModel{
+                TaskId = ut.TaskId,
+                TaskTitle = ut.TaskTitle,
+                Tasks = ut.Tasks,
+                TaskDue = ut.TaskDue,
+                TaskTypeName = tt.Name
+            } ;
+            //IEnumerable < TaskViewModel > t = userstasks.Join(tasktype, task => task.TaskTypeId, type => type.Id, (task, type) => new TaskViewModel
+            //{
+            //    TaskId = task.TaskId,
+            //    TaskTitle = task.TaskTitle,
+            //    Tasks = task.Tasks,
+            //    TaskDue = task.TaskDue,
+            //    TaskTypeName = type.Name
+            //}).Where(x => x.TaskDue == d);
+            
+            return View(T);
+        }
         // GET: Task/Details/5
         public ActionResult Details(int id)
         {

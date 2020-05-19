@@ -32,7 +32,7 @@ namespace RemindYoSelf.Models
         public TaskTypeViewModel TaskType { get; set; }
         public int TaskTypeId { get; set; }
         public string TaskTypeName { get; set; }
-        
+
     }
     public class CreateTaskViewModel
     {

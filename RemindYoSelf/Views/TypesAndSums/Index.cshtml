@@ -1,0 +1,22 @@
+﻿@model IEnumerable<RemindYoSelf.Models.SumAndTaskNameViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            
+            <td>
+                <a asp-controller="TypesAndSums" asp-action="@item.UrlRouting" asp-route-id="@item.UserId, @item.TaskTypeId" class="btn btn-danger btn-circle" 
+style="font-size:40px; font-family:'Almendra SC'">Catagory:<br />@Html.DisplayFor(modelItem => item.TaskName)<br />Task Amount:<br />@Html.DisplayFor(modelItem => item.NumberOfTask)</a>
+                <a><br /><br /><br /></a>
+            </td>
+        </tr>
+}
+    </tbody>
