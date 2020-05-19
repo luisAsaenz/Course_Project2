@@ -21,9 +21,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Tasks" class="control-label"></label>
-                <input asp-for="Tasks" class="form-control" />
-                <span asp-validation-for="Tasks" class="text-danger"></span>
-            </div>
+                <textarea asp-for="Tasks" class="form-control" rows="7" cols="30">
+                    </textarea>
+                    <span asp-validation-for="Tasks" class="text-danger"></span>
+</div>
             <div class="form-group">
                 <label asp-for="TaskDue" class="control-label"></label>
                 <input asp-for="TaskDue" class="form-control" />

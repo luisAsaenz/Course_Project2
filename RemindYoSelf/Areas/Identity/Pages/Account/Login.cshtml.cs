@@ -42,6 +42,7 @@ namespace RemindYoSelf.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            public string Id { get; set; }
             [Required]
             [DataType(DataType.Text)]
             public string UserName { get; set; }
@@ -82,8 +83,11 @@ namespace RemindYoSelf.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                   
+
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    
+                    return RedirectToAction("Index", "Tasks");
                 }
                 if (result.RequiresTwoFactor)
                 {

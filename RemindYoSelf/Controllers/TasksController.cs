@@ -6,11 +6,15 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Internal;
+using Microsoft.Extensions.Logging;
 using RemindYoSelf.Contracts;
 using RemindYoSelf.Data;
 using RemindYoSelf.Models;
@@ -19,46 +23,71 @@ namespace RemindYoSelf.Controllers
 {
     public class TasksController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ILogger<LoginModel> _logger;
         private readonly ITaskTypeRepository _repo;
         private readonly IUserTaskRepository _repoTask;
         private readonly ISumOfTaskRepository _repoSumTask;
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
-        public TasksController(ITaskTypeRepository repo, IMapper mapper, IUserTaskRepository repoTask, ISumOfTaskRepository repoSumTask, ApplicationDbContext context)
+        public TasksController(ITaskTypeRepository repo, IMapper mapper, IUserTaskRepository repoTask, ISumOfTaskRepository repoSumTask, ApplicationDbContext context, SignInManager<IdentityUser> signInManager,
+            ILogger<LoginModel> logger,
+            UserManager<IdentityUser> userManager)
         {
             _repo = repo;
             _mapper = mapper;
             _repoTask = repoTask;
             _context = context;
             _repoSumTask = repoSumTask;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = logger;
         }
         // GET: Task
-        public ActionResult Index()
+        [Authorize]
+        public async Task<ActionResult> Index()
         {
+            string userid = await theUser();
+
             var userstasks = _repoTask.FindAll().ToList();
             var tasktype = _repo.FindAll().ToList();
             IEnumerable<TaskViewModel> t = userstasks.Join(tasktype, task => task.TaskTypeId, type => type.Id, (task, type) => new TaskViewModel
             {
+                UserId = task.UserId,
                 TaskId = task.TaskId,
                 TaskTitle = task.TaskTitle,
                 Tasks = task.Tasks,
                 TaskDue = task.TaskDue,
                 TaskTypeName = type.Name
-            }).OrderBy(x => x.TaskDue);
+            }).Where(x => x.UserId == userid).OrderBy(x => x.TaskDue);
             int num = t.Count();
 
             var model = _mapper.Map<List<UserTasks>, List<TaskViewModel>>(userstasks);
             return View(t);
 
         }
-        public ActionResult TodayTask()
+
+        public async Task<string> theUser()
         {
-            var userstasks = _repoTask.FindAll().ToList();
+            var current_user = await _userManager.GetUserAsync(HttpContext.User);
+            var userid = await _userManager.GetUserIdAsync(current_user);
+            return userid;
+        }
+
+        [Authorize]
+
+        public async Task<ActionResult> TodayTask()
+        {
+           string userid = await theUser();
+
+        var userstasks = _repoTask.FindAll().ToList();
             var tasktype = _repo.FindAll().ToList();
             DateTime d = DateTime.Now.Date;
 
             
-            IEnumerable<TaskViewModel> T = from ut in userstasks join tt in tasktype on ut.TaskTypeId equals tt.Id where ut.TaskDue == DateTime.Now.Date select new TaskViewModel{
+            IEnumerable<TaskViewModel> T = from ut in userstasks join tt in tasktype on ut.TaskTypeId equals tt.Id where ut.TaskDue == DateTime.Now.Date && ut.UserId == userid select new TaskViewModel{
+                UserId = ut.UserId,
                 TaskId = ut.TaskId,
                 TaskTitle = ut.TaskTitle,
                 Tasks = ut.Tasks,
@@ -77,8 +106,11 @@ namespace RemindYoSelf.Controllers
             return View(T);
         }
         // GET: Task/Details/5
-        public ActionResult Details(int id)
+        [Authorize]
+
+        public async Task<ActionResult> Details(int id)
         {
+            string userid = await theUser();
             if (!_repoTask.IsExist(id))
             {
                 return NotFound();
@@ -89,6 +121,8 @@ namespace RemindYoSelf.Controllers
         }
 
         // GET: Task/Create
+        [Authorize]
+
         public ActionResult Create()
         {
             return View();
@@ -97,15 +131,18 @@ namespace RemindYoSelf.Controllers
         // POST: Task/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateTaskViewModel ct)
+        [Authorize]
+        public async Task<ActionResult> Create(CreateTaskViewModel ct)
         {
             try
             {
+
                 // TODO: Add insert logic here
                 if(!ModelState.IsValid)
                 {
                     return View(ct);
                 }
+                ct.UserId = await theUser();
                 var tasks = _mapper.Map<UserTasks>(ct);
                 var created =_repoTask.Create(tasks);
                 if (!created)
@@ -152,6 +189,7 @@ namespace RemindYoSelf.Controllers
 
         // GET: Task/Edit/5
         // Todo: Make edit task searchable for task. Make more action methods for Edit Task
+        [Authorize]
         public ActionResult Edit(int id)
         {
             
@@ -168,7 +206,8 @@ namespace RemindYoSelf.Controllers
         // POST: Task/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(CreateTaskViewModel ct)
+        [Authorize]
+        public async Task<ActionResult> Edit(CreateTaskViewModel ct)
         {
             try
             {
@@ -176,6 +215,7 @@ namespace RemindYoSelf.Controllers
                 {
                     return View(ct);
                 }
+                ct.UserId = await theUser();
                 var task = _mapper.Map<UserTasks>(ct);
                 var isUpdated = _repoTask.Update(task);
                 if (!isUpdated)
@@ -193,6 +233,8 @@ namespace RemindYoSelf.Controllers
         }
 
         // GET: Task/Delete/5
+        [Authorize]
+
         public ActionResult Delete(int id)
         {
             var task = _repoTask.FindById(id);
@@ -225,12 +267,16 @@ namespace RemindYoSelf.Controllers
 
         // POST: Task/Delete/5
         [HttpPost]
+        [Authorize]
+
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, CreateTaskViewModel ct, string id2)
+        public async Task<ActionResult> Delete(int id, CreateTaskViewModel ct)
         {
             try
             {
                 // TODO: Add delete logic here
+                ct.UserId = await theUser();
+                var tasks = _mapper.Map<UserTasks>(ct);
                 var task = _repoTask.FindById(id);
                 if (task == null)
                 {
