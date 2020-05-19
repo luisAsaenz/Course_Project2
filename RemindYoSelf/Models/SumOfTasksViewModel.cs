@@ -17,7 +17,7 @@ namespace RemindYoSelf.Models
         //    UserId: 3, TaskTypeName: Social Gatherings, NumberOfTask: 8
         public int Id { get; set; }
         public int NumberOfTask { get; set; }
-        public UserViewModel User { get; set; }
+        public UserViewModel Users { get; set; }
         public string UserId { get; set; }
         
         public TaskTypeViewModel TaskType { get; set; }

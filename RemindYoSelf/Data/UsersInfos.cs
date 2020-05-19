@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RemindYoSelf.Data
 {
-    public class User : IdentityUser
+    public class UsersInfos : IdentityUser
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }

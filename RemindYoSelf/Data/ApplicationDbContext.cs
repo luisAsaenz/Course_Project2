@@ -13,11 +13,9 @@ namespace RemindYoSelf.Data
             : base(options)
         {
         }
-        public DbSet<User> Users { get; set; }
+        public DbSet<UsersInfos> UserInfo { get; set; }
         public DbSet<UserTasks> Task { get; set; }
         public DbSet<TaskType> TaskTypes { get; set; }
         public DbSet<SumOfTask> SumOfTasks { get; set; }
-
- 
     }
 }

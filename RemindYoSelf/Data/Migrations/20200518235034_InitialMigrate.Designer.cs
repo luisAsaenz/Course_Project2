@@ -10,7 +10,7 @@ using RemindYoSelf.Data;
 namespace RemindYoSelf.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200518020722_InitialMigrate")]
+    [Migration("20200518235034_InitialMigrate")]
     partial class InitialMigrate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -300,7 +300,7 @@ namespace RemindYoSelf.Migrations
                     b.ToTable("Task");
                 });
 
-            modelBuilder.Entity("RemindYoSelf.Data.User", b =>
+            modelBuilder.Entity("RemindYoSelf.Data.UsersInfos", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -310,7 +310,7 @@ namespace RemindYoSelf.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasDiscriminator().HasValue("User");
+                    b.HasDiscriminator().HasValue("UsersInfos");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -372,7 +372,7 @@ namespace RemindYoSelf.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RemindYoSelf.Data.User", "User")
+                    b.HasOne("RemindYoSelf.Data.UsersInfos", "Users")
                         .WithMany()
                         .HasForeignKey("UserId");
                 });
@@ -385,7 +385,7 @@ namespace RemindYoSelf.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RemindYoSelf.Data.User", "Users")
+                    b.HasOne("RemindYoSelf.Data.UsersInfos", "Users")
                         .WithMany("UserTask")
                         .HasForeignKey("UserId");
                 });

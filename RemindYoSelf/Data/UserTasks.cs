@@ -23,7 +23,7 @@ namespace RemindYoSelf.Data
 
         public string UserId { get; set; }
         [ForeignKey("UserId")]
-        public User Users { get; set; }
+        public UsersInfos Users { get; set; }
         [ForeignKey("TaskTypeId")]
         public TaskType TaskType { get; set; }
         public int TaskTypeId { get; set; }
