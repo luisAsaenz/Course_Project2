@@ -48,6 +48,9 @@ namespace RemindYoSelf.Controllers
         [Authorize]
         public async Task<ActionResult> Index()
         {
+            string date = DateTime.Now.ToString("D");
+
+            ViewBag.message = $"Today is {date}";
             string userid = await theUser();
 
             var userstasks = _repoTask.FindAll().ToList();

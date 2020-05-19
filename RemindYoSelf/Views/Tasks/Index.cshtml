@@ -3,8 +3,10 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>All Task</h1>
+    <center>
+    <h1 style="font-family:Jokerman">@ViewBag.message</h1>
+    </center>
+    <h1 style="font-family:Jokerman">All Task</h1>
 <style>
     #namas, #namas2 {
         color: black;
@@ -24,7 +26,7 @@
                 @Html.DisplayNameFor(model => model.Tasks)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TaskDue)
+                Task Due
             </th>
             <th>
                 Catagory

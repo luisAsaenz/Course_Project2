@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1 style="font-family:Jokerman">Task Catagories SON!!</h1>
 
 
     <tbody>
@@ -14,7 +14,7 @@
             
             <td>
                 <a asp-controller="TypesAndSums" asp-action="@item.UrlRouting" asp-route-id="@item.TaskTypeId" class="btn btn-danger btn-circle" 
-style="font-size:40px; font-family:'Almendra SC'">Catagory:<br />@Html.DisplayFor(modelItem => item.TaskName)<br />Task Amount:<br />@Html.DisplayFor(modelItem => item.NumberOfTask)</a>
+style="font-size:40px">Catagory:<br />@Html.DisplayFor(modelItem => item.TaskName)<br />Task Amount:<br />@Html.DisplayFor(modelItem => item.NumberOfTask)</a>
                 <a><br /><br /><br /></a>
             </td>
         </tr>
